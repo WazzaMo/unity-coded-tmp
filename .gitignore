@@ -1,0 +1,24 @@
+
+## Unity Specific Ignores
+.vs/
+obj/
+Temp/
+ProjectSettings/
+Packages/
+Logs/
+Library/
+Assembly-CSharp.csproj
+ProgrammaticTMP.sln
+
+**/*.meta
+
+## No point using my Images - get your own
+Assets/Images/
+Assets/TextMesh\ Pro/
+
+#~ LWRP (Universal) Render Pipeline - no need to save that.
+Assets/Settings
+Assets/ForwardRenderer.asset
+Assets/Readme.asset
+
+Assets/Presets/
