@@ -18,14 +18,12 @@ public enum ScaleChange
     ToBottomRight
 }
 
-[RequireComponent(typeof(Image))]
 public class Rescaler : MonoBehaviour
 {
     [SerializeField] private float _ScaleFactor = 0.2f;
     [SerializeField] private float _Padding = 10f;
 
     private RectTransform _RectTransform;
-    private Image _Panel;
     private Vector2 _OriginalPivot;
     private Vector3 _OriginalScale;
     private Vector2 _OriginalAnchorMin, _OriginalAnchorMax;
@@ -127,8 +125,15 @@ Offset {offsetMin.x}, {offsetMin.y} to {offsetMax.x}, {offsetMax.y}
 
     private void SetupComponentRefs()
     {
-        _RectTransform = GetComponent<RectTransform>();
-        _Panel = GetComponent<Image>();
+        var rectTransform = GetComponent<RectTransform>();
+        if (rectTransform == null)
+        {
+            Debug.LogWarning($"GameObject {name} should be a UI object to have the component {nameof(Rescaler)} attached.");
+        }
+        else
+        {
+            _RectTransform = rectTransform;
+        }
     }
 
     private void SaveDimensions()
