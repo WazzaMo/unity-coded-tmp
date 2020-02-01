@@ -4,43 +4,23 @@
  */
 
 
-using System.Collections;
-using System.Collections.Generic;
-
 using UnityEngine;
-using UnityEngine.UI;
 
-public enum ScaleChange
-{
-    ToTopLeft,
-    ToTopRight,
-    ToBottomLeft,
-    ToBottomRight
-}
+using Kreation.Util;
 
+/// <summary>
+/// Makes it easy to reposition a UI object relative to any
+/// corner of the parent and apply a scale and padding.
+/// </summary>
 public class Rescaler : MonoBehaviour
 {
     [SerializeField] private float _ScaleFactor = 0.2f;
     [SerializeField] private float _Padding = 10f;
 
     private RectTransform _RectTransform;
-    private Vector2 _OriginalPivot;
-    private Vector3 _OriginalScale;
-    private Vector2 _OriginalAnchorMin, _OriginalAnchorMax;
+    private UiPositionSettings _OriginalSettings;
 
-    private readonly Vector3 _100PC = new Vector3(1f, 1f, 1f);
 
-    private readonly Vector2
-        __PosTopLeft = new Vector2(1f, -1f),
-        __PosBottomLeft = new Vector2(1f, 1f),
-        __PosTopRight = new Vector2(-1f, -1f),
-        __PosBottomRight = new Vector2(-1, 1f);
-
-    private readonly Vector2
-        TOPLEFT = new Vector2(0, 1f),
-        TOPRIGHT = new Vector2(1, 1f),
-        BTMLEFT = Vector2.zero,
-        BTMRIGHT = new Vector2(1f, 0);
 
     void Start()
     {
@@ -49,65 +29,50 @@ public class Rescaler : MonoBehaviour
     }
 
     public void ResetToNormal()
-    {
-        _RectTransform.pivot = _OriginalPivot;
-        _RectTransform.localScale = _OriginalScale;
-        _RectTransform.anchorMin = _OriginalAnchorMin;
-        _RectTransform.anchorMax = _OriginalAnchorMax;
-    }
+        => _RectTransform.SetUiPosition(_OriginalSettings);
 
-    public void TopLeft() => TopLeftAndScale(_ScaleFactor, _Padding);
-
-    public void TopLeftAndScale(float scale, float padding)
-        => PinAndScale(scale, padding, TOPLEFT, __PosTopLeft);
+    public void TopLeft()
+        => PinAndScale(
+            _ScaleFactor, _Padding,
+            RectTransformUtil.PivotTopLeft,
+            RectTransformUtil.AnchorPosTopLeft
+        );
 
     public void TopRight()
-        => TopRightAndScale(_ScaleFactor, _Padding);
-
-    public void TopRightAndScale(float scale, float padding)
-        => PinAndScale(scale, padding, TOPRIGHT, __PosTopRight);
-
-    public void BottomLeft() => BottomLeftAndScale(_ScaleFactor, _Padding);
-
-    public void BottomLeftAndScale(float scale, float padding)
-        => PinAndScale(scale, padding, BTMLEFT, __PosBottomLeft);
-
-    public void BottomRight() => BottomRightAndScale(_ScaleFactor, _Padding);
-
-    public void BottomRightAndScale(float scale, float padding)
-        => PinAndScale(scale, padding, BTMRIGHT, __PosBottomRight);
-
-    public void DumpRectTrans()
-    {
-        Vector2
-            anchorMin = _RectTransform.anchorMin,
-            anchorMax = _RectTransform.anchorMax,
-            anchorPos = _RectTransform.anchoredPosition,
-            pivot = _RectTransform.pivot,
-            offsetMin = _RectTransform.offsetMin,
-            offsetMax = _RectTransform.offsetMax;
-
-        Rect rect = _RectTransform.rect;
-        Vector3
-            pos3d = _RectTransform.localPosition,
-            scale = _RectTransform.localScale;
-
-        Debug.Log(
-$@"RectTransform Details::
-Anchor Min - x:{anchorMin.x} y: {anchorMin.y}
-Anchor Max - x:{anchorMax.x} y: {anchorMax.y}
-Anchor Position - {anchorPos.x}, {anchorPos.y}
-Pivot: {pivot.x}, {pivot.y}
-Scale: {scale.x}, {scale.y}, {scale.z}
-
---- Less Useful Parts of RectTransform ---
-(calc) Rect - pos: {rect.x}, {rect.y} size: {rect.width}, {rect.height}
-3D Pos: {pos3d.x}, {pos3d.y}, {pos3d.z}
-Offset {offsetMin.x}, {offsetMin.y} to {offsetMax.x}, {offsetMax.y}
-"
+        => PinAndScale(
+            _ScaleFactor, _Padding,
+            RectTransformUtil.PivotTopRight,
+            RectTransformUtil.AnchorPosTopRight
         );
-    }
 
+    public void BottomLeft()
+        => PinAndScale(
+            _ScaleFactor, _Padding,
+            RectTransformUtil.PivotBottomLeft,
+            RectTransformUtil.AnchorPosBottomLeft
+        );
+
+    public void BottomRight()
+        => PinAndScale(
+            _ScaleFactor, _Padding,
+            RectTransformUtil.PivotBottomRight,
+            RectTransformUtil.AnchorPosBottomRight
+        );
+
+    public void DumpRectTrans() => UiDebug.DumpRectTrans(gameObject);
+
+    /// <summary>
+    /// Uses a pivot point to "pin" the object as the relative
+    /// side or corner point on the object from which the padding
+    /// will be measured. If the Pin is the top-left corner and the
+    /// padding is 10,-20 then there will be 10px from the left
+    /// and 20 px from the top.  Remember that y is measured up
+    /// so when measuring from the top, it needs to be negative.
+    /// </summary>
+    /// <param name="scale">Scale factors in 3 dimensions</param>
+    /// <param name="padding">multiplier for the position</param>
+    /// <param name="pinPoint">x, y relative position (0 to 1) for pivot</param>
+    /// <param name="position">x, y distance from edge in px</param>
     private void PinAndScale(
         float scale,
         float padding,
@@ -115,32 +80,22 @@ Offset {offsetMin.x}, {offsetMin.y} to {offsetMax.x}, {offsetMax.y}
         Vector2 position
     )
     {
-        _RectTransform.anchorMin = pinPoint;
-        _RectTransform.anchorMax = pinPoint;
-        _RectTransform.pivot = pinPoint;
-        _RectTransform.anchoredPosition = padding * position;
-        _RectTransform.localScale = scale * _100PC;
+        _RectTransform.SetUiPosition(
+            pinPoint, pinPoint, pinPoint,
+            padding * position,
+            scale * RectTransformUtil._100PC
+        );
     }
-
 
     private void SetupComponentRefs()
     {
-        var rectTransform = GetComponent<RectTransform>();
-        if (rectTransform == null)
-        {
-            Debug.LogWarning($"GameObject {name} should be a UI object to have the component {nameof(Rescaler)} attached.");
-        }
-        else
-        {
-            _RectTransform = rectTransform;
-        }
+        _RectTransform = this.GetComponentOrWarn<RectTransform>(
+            $"GameObject {name} should be a UI object to have the component {nameof(Rescaler)} attached."
+        );
     }
 
     private void SaveDimensions()
     {
-        _OriginalAnchorMin = _RectTransform.anchorMin;
-        _OriginalAnchorMax = _RectTransform.anchorMax;
-        _OriginalPivot = _RectTransform.pivot;
-        _OriginalScale = _RectTransform.localScale;
+        _OriginalSettings = _RectTransform.GetUiPosition();
     }
 }
