@@ -25,7 +25,6 @@ public class Resizer : MonoBehaviour
     void Start()
     {
         _AutoSizeTrigger = new ChangeTrigger<bool>(AutoSizeText);
-        _AutoSizeTrigger.Add(x => Debug.Log($"New value: {x}"));
         _AutoSizeTrigger.Add(UpdateTextState);
 
         SetupComponentReferences();
