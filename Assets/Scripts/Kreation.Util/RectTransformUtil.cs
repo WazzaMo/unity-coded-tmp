@@ -33,20 +33,31 @@ namespace Kreation.Util
             PivotBottomLeft = Vector2.zero,
             PivotBottomRight = new Vector2(1f, 0);
 
-        public static void SetUiPosition(
+        public static void FixSizeAndSetPosition(
             this RectTransform _RectTransform,
+            UiPositionSettings setting,
             Vector2 anchorMin, Vector2 anchorMax,
             Vector2 pivot, Vector2 position,
             Vector3 scale
         )
         {
-            if (_RectTransform != null)
+            if (_RectTransform != null && setting.IsValid)
             {
-                _RectTransform.anchorMin = anchorMin;
-                _RectTransform.anchorMax = anchorMax;
-                _RectTransform.pivot = pivot;
-                _RectTransform.anchoredPosition = position;
-                _RectTransform.localScale = scale;
+                if (setting.IsSizeFixed)
+                {
+                    SetPositionWhenSizeAlreadyFixed(
+                        _RectTransform,
+                        anchorMin, anchorMax,
+                        pivot, position, scale
+                    );
+                }
+                else
+                {
+                    SetPositionAndConvertToFixedSize(_RectTransform,
+                        anchorMin, anchorMax,
+                        pivot, position, scale
+                    );
+                }
             }
         }
 
@@ -64,11 +75,7 @@ namespace Kreation.Util
         {
             if (_RectTransform != null && positionSettings.IsValid)
             {
-                _RectTransform.anchorMin = positionSettings.AnchorMin;
-                _RectTransform.anchorMax = positionSettings.AnchorMax;
-                _RectTransform.pivot = positionSettings.Pivot;
-                _RectTransform.anchoredPosition = positionSettings.Position;
-                _RectTransform.localScale = positionSettings.Scale;
+                SetAnchorPivotPositionAndScale(_RectTransform, positionSettings);
             }
             else
             {
@@ -81,6 +88,101 @@ namespace Kreation.Util
                     Debug.LogWarning("Position of UI element not captured because GetUiPosition() was called with invalid RectTransform.");
                 }
             }
+        }
+
+        private static void SetAnchorPivotPositionAndScale(
+            RectTransform _RectTransform,
+            UiPositionSettings positionSettings
+        )
+        {
+            SetAnchorPivotAndScale(_RectTransform,
+                    positionSettings.AnchorMin, positionSettings.AnchorMax,
+                    positionSettings.Pivot, positionSettings.Scale
+                );
+
+            if (positionSettings.IsSizeFixed)
+            {
+                SetUiPositionFixedSizeStrategy(_RectTransform, positionSettings);
+            }
+            else
+            {
+                SetUiPositionBoundaryBasedStrategy(
+                    _RectTransform, positionSettings
+                );
+            }
+        }
+
+        private static void SetAnchorPivotAndScale(
+            RectTransform _RectTransform,
+            Vector2 anchorMin, Vector2 anchorMax,
+            Vector2 pivot, Vector3 scale
+        )
+        {
+            _RectTransform.anchorMin = anchorMin;
+            _RectTransform.anchorMax = anchorMax;
+            _RectTransform.pivot = pivot;
+            _RectTransform.localScale = scale;
+        }
+
+        private static void SetPositionWhenSizeAlreadyFixed(
+            RectTransform _RectTransform,
+            Vector2 anchorMin, Vector2 anchorMax,
+            Vector2 pivot, Vector2 position,
+            Vector3 scale
+        )
+        {
+            SetAnchorPivotAndScale(_RectTransform,
+                anchorMin, anchorMax, pivot, scale
+            );
+            _RectTransform.anchoredPosition = position;
+        }
+
+        private static void SetPositionAndConvertToFixedSize(
+            RectTransform _RectTransform,
+            Vector2 anchorMin, Vector2 anchorMax,
+            Vector2 pivot, Vector2 position,
+            Vector3 scale
+        )
+        {
+            Rect rect = _RectTransform.rect;
+            SetPositionWhenSizeAlreadyFixed(
+                _RectTransform,
+                anchorMin, anchorMax,
+                pivot, position, scale
+            );
+            _RectTransform.SetSizeWithCurrentAnchors(
+                RectTransform.Axis.Horizontal,
+                rect.width
+            );
+            _RectTransform.SetSizeWithCurrentAnchors(
+                RectTransform.Axis.Vertical,
+                rect.height
+            );
+        }
+
+        private static void SetUiPositionFixedSizeStrategy(
+            RectTransform _RectTransform,
+            UiPositionSettings positionSettings
+        )
+        {
+            _RectTransform.anchoredPosition = positionSettings.Position;
+            _RectTransform.SetSizeWithCurrentAnchors(
+                RectTransform.Axis.Horizontal,
+                positionSettings.PosMaxOrSize.x
+            );
+            _RectTransform.SetSizeWithCurrentAnchors(
+                RectTransform.Axis.Vertical,
+                positionSettings.PosMaxOrSize.y
+            );
+        }
+
+        private static void SetUiPositionBoundaryBasedStrategy(
+            RectTransform _RectTransform,
+            UiPositionSettings positionSettings
+        )
+        {
+            _RectTransform.offsetMin = positionSettings.Position;
+            _RectTransform.offsetMax = positionSettings.PosMaxOrSize;
         }
     }
 

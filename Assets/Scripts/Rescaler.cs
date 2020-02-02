@@ -16,11 +16,10 @@ public class Rescaler : MonoBehaviour
 {
     [SerializeField] private float _ScaleFactor = 0.2f;
     [SerializeField] private float _Padding = 10f;
+    [SerializeField] private Vector2 _WidthAndHeight = new Vector2(100, 50);
 
     private RectTransform _RectTransform;
     private UiPositionSettings _OriginalSettings;
-
-
 
     void Start()
     {
@@ -71,7 +70,9 @@ public class Rescaler : MonoBehaviour
     /// </summary>
     /// <param name="scale">Scale factors in 3 dimensions</param>
     /// <param name="padding">multiplier for the position</param>
-    /// <param name="pinPoint">x, y relative position (0 to 1) for pivot</param>
+    /// <param name="pinPoint">
+    ///     x, y relative position (0 to 1) for pivot
+    /// </param>
     /// <param name="position">x, y distance from edge in px</param>
     private void PinAndScale(
         float scale,
@@ -80,7 +81,8 @@ public class Rescaler : MonoBehaviour
         Vector2 position
     )
     {
-        _RectTransform.SetUiPosition(
+        _RectTransform.FixSizeAndSetPosition(
+            _OriginalSettings,
             pinPoint, pinPoint, pinPoint,
             padding * position,
             scale * RectTransformUtil._100PC
@@ -97,5 +99,6 @@ public class Rescaler : MonoBehaviour
     private void SaveDimensions()
     {
         _OriginalSettings = _RectTransform.GetUiPosition();
+        _WidthAndHeight = _OriginalSettings.WidthAndHeight;
     }
 }
