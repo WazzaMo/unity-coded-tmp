@@ -47,10 +47,6 @@ namespace Kreation.Util
             IsValid = other.IsValid;
         }
 
-        public Vector2 WidthAndHeight {
-            get =>new Vector2(PosMaxOrSize.x - Position.x, PosMaxOrSize.y - Position.y);
-        }
-
         private static bool IsFixedSize(
             Vector2 anchorMin,
             Vector2 anchorMax

@@ -5,10 +5,9 @@
 
 
 using UnityEngine;
-
-
 using TMPro;    // Knowing the Namespace is half the battle!!
 
+using Kreation.Util;
 
 public class Resizer : MonoBehaviour
 {
@@ -29,7 +28,7 @@ public class Resizer : MonoBehaviour
 
         SetupComponentReferences();
         SetupRightValues();
-        UpdateTextState(AutoSizeText);
+        UpdateTextState(AutoSizeText, ! AutoSizeText);
     }
 
     void Update()
@@ -51,7 +50,7 @@ public class Resizer : MonoBehaviour
         _RightOffset = (RightMax + RightMin) / 2f;
     }
 
-    private void UpdateTextState(bool isEnabled)
+    private void UpdateTextState(bool isEnabled, bool previouslyIsEnabled)
     {
         if (_ChildTexts != null && _ChildTexts.Length > 0)
         {

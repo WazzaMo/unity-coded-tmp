@@ -16,7 +16,6 @@ public class Rescaler : MonoBehaviour
 {
     [SerializeField] private float _ScaleFactor = 0.2f;
     [SerializeField] private float _Padding = 10f;
-    [SerializeField] private Vector2 _WidthAndHeight = new Vector2(100, 50);
 
     private RectTransform _RectTransform;
     private UiPositionSettings _OriginalSettings;
@@ -99,6 +98,5 @@ public class Rescaler : MonoBehaviour
     private void SaveDimensions()
     {
         _OriginalSettings = _RectTransform.GetUiPosition();
-        _WidthAndHeight = _OriginalSettings.WidthAndHeight;
     }
 }

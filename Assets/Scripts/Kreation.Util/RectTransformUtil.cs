@@ -31,7 +31,26 @@ namespace Kreation.Util
             PivotTopLeft = new Vector2(0, 1f),
             PivotTopRight = new Vector2(1, 1f),
             PivotBottomLeft = Vector2.zero,
-            PivotBottomRight = new Vector2(1f, 0);
+            PivotBottomRight = new Vector2(1f, 0),
+            PivotCentreMid = new Vector2(0.5f, 0.5f);
+
+        public static void SetPositionAndAnchors(
+            RectTransform _RectTransform,
+            Vector2 anchorMin, Vector2 anchorMax,
+            Vector2 pivot,
+            Vector2 minOffset, Vector2 maxOffset,
+            Vector3 scale
+        )
+        {
+            SetPositionWhenSizeAlreadyFixed(
+                _RectTransform,
+                anchorMin, anchorMax,
+                pivot, Vector2.zero, scale
+            );
+            _RectTransform.offsetMin = minOffset;
+            _RectTransform.offsetMax = maxOffset;
+        }
+
 
         public static void FixSizeAndSetPosition(
             this RectTransform _RectTransform,
