@@ -4,9 +4,6 @@
  */
 
 
-using System;
-using System.Collections.Generic;
-
 using UnityEngine;
 
 using Kreation.Util;
@@ -29,6 +26,7 @@ public enum LayoutState
 /// Uses anchors and dynamic sizing, to control the layout
 /// of a series of components and move their layout.
 /// </summary>
+[AddComponentMenu("DesignerTech/AnimatableLayout")]
 public class AnimatableLayout : MonoBehaviour
 {
     [Tooltip("Select the objects to layout")][SerializeField]

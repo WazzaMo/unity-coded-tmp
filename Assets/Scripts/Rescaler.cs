@@ -12,6 +12,8 @@ using Kreation.Util;
 /// Makes it easy to reposition a UI object relative to any
 /// corner of the parent and apply a scale and padding.
 /// </summary>
+[AddComponentMenu("DesignerTech/Rescaler")]
+
 public class Rescaler : MonoBehaviour
 {
     [SerializeField] private float _ScaleFactor = 0.2f;

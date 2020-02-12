@@ -9,11 +9,25 @@ using TMPro;    // Knowing the Namespace is half the battle!!
 
 using Kreation.Util;
 
+/// <summary>
+///     Makes the right edge of a UI object stretch out
+///     buy adjusting the offset of the right edge from the
+///     anchor based on the parent object. This is used to
+///     demonstrate the effect of resizing child objects
+///     in a resizing panel.
+/// </summary>
+[AddComponentMenu("DesignerTech/Resizer")]
 public class Resizer : MonoBehaviour
 {
-    public float RightMax, RightMin;
-    public float Speed = 1;
-    public bool AutoSizeText = false;
+    [Tooltip("Used to control the variation of the right edge")][SerializeField]
+    private float RightMax = 100f, RightMin = 10f;
+
+    [Tooltip("Speed of movement")][SerializeField]
+    private float Speed = 1;
+
+    [Tooltip("Tell all TMP text to auto font size")][SerializeField]
+    private bool AutoSizeText = false;
+
 
     private TMP_Text[] _ChildTexts;
     private RectTransform _Transform;
