@@ -27,15 +27,15 @@ to unpack it to use it.
 
 ## Components
 
-If you using Unity Editor Add Components menu you will see
+If you are using the Unity Editor `Add Components` menu you will see
 a DesignerTech entry with the components from this project.
 
 There are three components you can add to a scene
 to get different outcomes.
 
 1. Resizer (demonstrates dynamic RectTransform sizing)
-2. Rescaler (demonstrates using scale on image / panel)
-3. AnimatableLayout (shows how to manipulate anchors)
+2. Rescaler (demonstrates using scale on image / panel and positioning by pivot, anchors and anchorPosition)
+3. AnimatableLayout (shows how to manipulate anchors for layout that stays within the parent object region)
 
 
 
