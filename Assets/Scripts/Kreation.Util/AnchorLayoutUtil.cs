@@ -10,6 +10,19 @@ namespace Kreation.Util
 
     public static class AnchorLayoutUtil
     {
+        /// <summary>
+        ///     Manipulate the layout for horizontal
+        ///     collapse progress.
+        /// </summary>
+        /// <param name="progress">
+        ///     How collapsed the object should be.
+        ///     0 is expanded, 1 = collapsed.
+        /// </param>
+        /// <param name="uiObjects">Array of RectTransforms</param>
+        /// <param name="heightFractions">Array of heights</param>
+        /// <param name="anchorMargin">margin around object</param>
+        /// <param name="collapsedWidth">collapse threshold</param>
+        /// <param name="alignment">Left or Right</param>
         public static void TweenedHorizontalLayout(
             float progress,
             RectTransform[] uiObjects,
