@@ -2,9 +2,13 @@
 
 ## YouTube
 
-This project is to support any videos
-about programmatic control of TextMesh Pro in Unity
-for the 
+[Intro](https://youtu.be/1RFqrJPBDj0)
+[Part 1](https://youtu.be/XdOJFUQM24U)
+[Part 2](https://youtu.be/1LHy4UbccdY)
+[Part 3](https://youtu.be/DgYfLerqA5w)
+
+
+All part of the 
 [Designer Tech Channel](https://www.youtube.com/channel/UCE3nwVJoAMB5QOp14R3eZqw/).
 
 ## Setup
